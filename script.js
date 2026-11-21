@@ -9,10 +9,17 @@ document.addEventListener("DOMContentLoaded", () => {
       status.textContent = "Sending inquiry...";
 
       const formData = new FormData(form);
+      const object = Object.fromEntries(formData);
+      const json = JSON.stringify(object);
+
       try {
         const response = await fetch("https://web3forms.com", {
           method: "POST",
-          body: formData
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: json
         });
         const result = await response.json();
 
@@ -22,11 +29,11 @@ document.addEventListener("DOMContentLoaded", () => {
           form.reset();
         } else {
           status.style.color = "#B91C1C";
-          status.textContent = "Submission failed. Please verify your Web3Forms Access Key.";
+          status.textContent = result.message || "Submission failed. Please check your Web3Forms settings.";
         }
       } catch (error) {
         status.style.color = "#B91C1C";
-        status.textContent = "Network error. Please try again shortly.";
+        status.textContent = "Connection blocked by browser or network. Please check your internet and try again.";
       }
     });
   }
